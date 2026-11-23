@@ -9,6 +9,7 @@
       <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <label>Key (để trống = tự sinh)</label>
       <input name="license_key" placeholder="MDUYK-XXXXXXXXXXXXXXXX-XXXXXXXX">
+      <label class="check"><input type="checkbox" name="lifetime" value="1" style="width:auto"> Vĩnh viễn (Lifetime — không hết hạn)</label>
       <div class="row">
         <div><label>Số ngày</label><input name="duration_days" type="number" value="30"></div>
         <div><label>Max devices</label><input name="max_devices" type="number" value="1"></div>
@@ -21,12 +22,13 @@
   <div class="panel">
     <h2>Danh sách</h2>
     <table>
-      <thead><tr><th>Key</th><th>Status</th><th>Devices</th><th>Note</th><th></th></tr></thead>
+      <thead><tr><th>Key</th><th>Status</th><th>Hạn</th><th>Devices</th><th>Note</th><th></th></tr></thead>
       <tbody>
         {% for r in rows %}
         <tr>
           <td><code>{{ r.license_key }}</code></td>
           <td>{{ r.status }}</td>
+          <td>{{ 'VĨNH VIỄN' if r.duration_days and r.duration_days < 0 else (r.expires_at or '—') }}</td>
           <td>{{ r.max_devices }}</td>
           <td>{{ r.note }}</td>
           <td>
@@ -37,7 +39,7 @@
             </form>
           </td>
         </tr>
-        {% else %}<tr><td colspan="5" class="muted">Chưa có license.</td></tr>{% endfor %}
+        {% else %}<tr><td colspan="6" class="muted">Chưa có license.</td></tr>{% endfor %}
       </tbody>
     </table>
   </div>

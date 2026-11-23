@@ -99,6 +99,7 @@ def licenses():
 def license_create():
     check_csrf()
     key = request.form.get("license_key", "").strip() or None
+    lifetime = request.form.get("lifetime") in ("1", "true", "on", "yes")
     try:
         created = create_license(
             key=key,
@@ -106,8 +107,9 @@ def license_create():
             max_devices=request.form.get("max_devices"),
             plan=request.form.get("plan", ""),
             note=request.form.get("note", ""),
+            lifetime=lifetime,
         )
-        flash("Da tao license: " + created)
+        flash("Da tao license: " + created + (" (VINH VIEN)" if lifetime else ""))
     except Exception as exc:
         flash("Loi: " + str(exc))
     return redirect(url_for("admin.licenses"))
