@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Tổng quan{% endblock %}
+{% block content %}
+<h1>Tổng quan</h1>
+<div class="cards">
+  {% for label, value in [('License', stats.licenses), ('Đang hoạt động', stats.active_licenses),
+                          ('Thiết bị', stats.devices), ('Token', stats.tokens), ('Patch file', stats.patches)] %}
+  <div class="card"><div class="value">{{ value }}</div><div class="label">{{ label }}</div></div>
+  {% endfor %}
+</div>
+<div class="panel">
+  <h2>License gần đây</h2>
+  <table>
+    <thead><tr><th>Key</th><th>Trạng thái</th><th>Max devices</th><th>Hết hạn</th></tr></thead>
+    <tbody>
+      {% for r in recent %}
+      <tr><td><code>{{ r.license_key }}</code></td><td>{{ r.status }}</td><td>{{ r.max_devices }}</td><td>{{ r.expires_at or '—' }}</td></tr>
+      {% else %}<tr><td colspan="4" class="muted">Chưa có license nào.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  <p><a class="btn" href="{{ url_for('admin.licenses') }}">Quản lý license</a>
+     <a class="btn" href="{{ url_for('admin.patches') }}">Upload patch</a></p>
+</div>
+{% endblock %}

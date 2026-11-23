@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Cấu hình{% endblock %}
+{% block content %}
+<h1>Cấu hình nội dung</h1>
+<div class="panel narrow">
+  <form method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    {% for key, label in fields %}
+      <label>{{ label }}</label>
+      <input name="{{ key }}" value="{{ values[key] }}">
+    {% endfor %}
+    <button type="submit">Lưu cấu hình</button>
+  </form>
+</div>
+{% endblock %}

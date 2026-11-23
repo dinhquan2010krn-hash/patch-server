@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Patch Server{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('admin.dashboard') }}">◈ PATCH SERVER</a>
+    {% if session.get('admin_logged_in') %}
+    <nav>
+      <a href="{{ url_for('admin.dashboard') }}">Tổng quan</a>
+      <a href="{{ url_for('admin.licenses') }}">License</a>
+      <a href="{{ url_for('admin.patches') }}">Patch files</a>
+      <a href="{{ url_for('admin.config_editor') }}">Cấu hình</a>
+    </nav>
+    <form method="post" action="{{ url_for('admin.logout') }}" class="logout">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <button type="submit">Đăng xuất</button>
+    </form>
+    {% endif %}
+  </header>
+  <main>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

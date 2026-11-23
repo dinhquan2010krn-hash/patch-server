@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Patch files{% endblock %}
+{% block content %}
+<h1>Patch files (.3105)</h1>
+<div class="grid-2">
+  <div class="panel">
+    <h2>Upload patch</h2>
+    <form method="post" action="{{ url_for('admin.patch_upload') }}" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <label>Chọn nhiều file .3105</label>
+      <input type="file" name="files" multiple accept=".3105" required>
+      <div class="row">
+        <div>
+          <label>Game ID</label>
+          <select name="game_id">
+            <option value="free-fire">free-fire</option>
+            <option value="free-fire-max">free-fire-max</option>
+            <option value="free-fire-vn">free-fire-vn</option>
+          </select>
+        </div>
+        <div>
+          <label>Category</label>
+          <select name="category">
+            <option value="aim">aim</option>
+            <option value="mod">mod</option>
+          </select>
+        </div>
+      </div>
+      <label>Package password (nếu có)</label>
+      <input name="package_password">
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+  <div class="panel">
+    <h2>Danh sách ({{ rows|length }})</h2>
+    <table>
+      <thead><tr><th>File</th><th>Game</th><th>Size</th><th>Trạng thái</th><th></th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td><code>{{ r.filename }}</code></td>
+          <td>{{ r.game_id }}</td>
+          <td>{{ (r.size / 1024)|round|int }} KB</td>
+          <td>{{ 'bật' if r.enabled else 'tắt' }}</td>
+          <td class="actions">
+            <a href="{{ url_for('admin.patch_download', patch_id=r.id) }}">↓</a>
+            <form method="post" action="{{ url_for('admin.patch_toggle') }}" class="inline">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="id" value="{{ r.id }}">
+              <button class="small" type="submit">{{ 'Tắt' if r.enabled else 'Bật' }}</button>
+            </form>
+            <form method="post" action="{{ url_for('admin.patch_delete') }}" class="inline" onsubmit="return confirm('Xóa file này?')">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="id" value="{{ r.id }}">
+              <button class="danger small" type="submit">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}<tr><td colspan="5" class="muted">Chưa có patch. Upload ở bên trái.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

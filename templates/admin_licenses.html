@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}License{% endblock %}
+{% block content %}
+<h1>Quản lý License</h1>
+<div class="grid-2">
+  <div class="panel">
+    <h2>Tạo license mới</h2>
+    <form method="post" action="{{ url_for('admin.license_create') }}">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <label>Key (để trống = tự sinh)</label>
+      <input name="license_key" placeholder="MDUYK-XXXXXXXXXXXXXXXX-XXXXXXXX">
+      <div class="row">
+        <div><label>Số ngày</label><input name="duration_days" type="number" value="30"></div>
+        <div><label>Max devices</label><input name="max_devices" type="number" value="1"></div>
+      </div>
+      <label>Plan</label><input name="plan" placeholder="pro">
+      <label>Ghi chú</label><input name="note">
+      <button type="submit">Tạo</button>
+    </form>
+  </div>
+  <div class="panel">
+    <h2>Danh sách</h2>
+    <table>
+      <thead><tr><th>Key</th><th>Status</th><th>Devices</th><th>Note</th><th></th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td><code>{{ r.license_key }}</code></td>
+          <td>{{ r.status }}</td>
+          <td>{{ r.max_devices }}</td>
+          <td>{{ r.note }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.license_revoke') }}" class="inline">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="license_key" value="{{ r.license_key }}">
+              <button class="danger small" type="submit">Revoke</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}<tr><td colspan="5" class="muted">Chưa có license.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
